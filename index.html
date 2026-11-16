@@ -156,8 +156,8 @@
                     </button>
                 </div>
             </div>
-							</div>
-							        <!-- WITHDRAW TAB -->
+		</div>
+		        <!-- WITHDRAW TAB -->
         <div id="tab-withdraw" class="tab-content space-y-4">
             <div class="glass-card p-4 rounded-2xl">
                 <h2 class="font-bold text-base text-white mb-2"><i class="fa-solid fa-money-bill-transfer text-emerald-400 mr-2"></i>টাকা উত্তোলন (সর্বনিম্ন ৳৫০০)</h2>
@@ -223,6 +223,7 @@
     <div id="bonusModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-xs rounded-2xl p-5 text-center border border-amber-500/30">
             <h3 class="font-bold text-base text-white mb-2">ডেইলি ফ্রি বোনাস ৳১০!</h3>
+            <p class="text-xs text-gray-400 mb-2">প্রতিদিন একবার ফ্রি বোনাস সংগ্রহ করুন।</p>
             <div class="flex space-x-2 mt-4">
                 <button onclick="claimBonus()" class="w-full gold-gradient text-white font-bold py-2.5 rounded-xl text-xs">দাবি করুন</button>
                 <button onclick="closeBonus()" class="w-full bg-gray-800 text-gray-300 font-bold py-2.5 rounded-xl text-xs">বাতিল</button>
@@ -233,22 +234,36 @@
         const BOT_TOKEN = '9204984501:AAEMnfvXy1v1mwKq2pTZMMnh9qwFPt0H7kY';
         const ADMIN_CHAT_ID = '9084728958';
 
+        let tgUserId = "849201948";
+        let userName = "রাকিব হাসান";
+
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe?.user) {
+            let tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+            tgUserId = tgUser.id.toString();
+            userName = (tgUser.first_name || '') + (tgUser.last_name ? ' ' + tgUser.last_name : '');
+        }
+
         let defaultData = {
-            name: "রাকিব হাসান",
-            id: "849201948",
+            name: userName,
+            id: tgUserId,
             balance: 20.00,
             totalInvested: 0,
             totalProfit: 0,
             activePlans: [],
             history: [{ title: "টেলিগ্রাম ওয়েলকাম বোনাস", amount: "+৳ 20", time: "এইমাত্র", type: "success" }],
-            referred: false
+            referred: false,
+            lastDailyBonus: ""
         };
 
-        let savedUser = localStorage.getItem('elite_investment_user');
+        let storageKey = 'elite_investment_user_' + tgUserId;
+        let savedUser = localStorage.getItem(storageKey);
         let userData = savedUser ? JSON.parse(savedUser) : defaultData;
+        userData.id = tgUserId;
+        userData.name = userName;
+        if(userData.lastDailyBonus === undefined) userData.lastDailyBonus = "";
 
         function saveUserData() {
-            localStorage.setItem('elite_investment_user', JSON.stringify(userData));
+            localStorage.setItem(storageKey, JSON.stringify(userData));
         }
 
         const packagesData = [
@@ -276,10 +291,6 @@
 
         function initApp() {
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe?.user) {
-                let tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-                userData.name = (tgUser.first_name || '') + (tgUser.last_name ? ' ' + tgUser.last_name : '');
-                userData.id = tgUser.id;
-
                 let startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
                 if (startParam && startParam.startsWith('ref') && !userData.referred) {
                     userData.balance += 50;
@@ -520,10 +531,18 @@
 
         function openDailyBonus() { document.getElementById('bonusModal').classList.remove('hidden'); }
         function closeBonus() { document.getElementById('bonusModal').classList.add('hidden'); }
+        
         function claimBonus() {
+            let today = new Date().toDateString();
+            if (userData.lastDailyBonus === today) {
+                alert("আপনি আজকে ইতিমধ্যে ডেইলি বোনাস গ্রহণ করেছেন! আগামীকাল আবার চেষ্টা করুন।");
+                closeBonus();
+                return;
+            }
             userData.balance += 10;
+            userData.lastDailyBonus = today;
             userData.history.unshift({ title: "ডেইলি বোনাস", amount: "+৳ 10", time: "এইমাত্র", type: "success" });
-            alert("বোনাস হিসেবে ৳১০ যোগ হয়েছে!");
+            alert("বোনাস হিসেবে ৳১০ সফলভাবে যোগ হয়েছে!");
             closeBonus();
             updateUI();
         }
@@ -532,3 +551,4 @@
     </script>
 </body>
 </html>
+	
