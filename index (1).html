@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elite Investment - Pro Box Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+      body {
+        font-family: 'Hind Siliguri', sans-serif;
+        background-color: #07090e;
+        color: #f3f4f6;
+      }
+
+      .glass-card {
+        background: rgba(17, 24, 39, 0.9);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .gradient-bg {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      }
+
+      .gold-gradient {
+        background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+      }
+
+      .box-gradient {
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+      }
+
+      .glow-effect {
+        box-shadow: 0 0 30px rgba(37, 99, 235, 0.2);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="pb-24">
+    <!-- Top Profile & Security Header -->
+    <header class="glass-card sticky top-0 z-50 px-4 py-3 border-b border-gray-800 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-lg shadow-lg" id="userAvatar">EI</div>
+        <div>
+          <div class="flex items-center space-x-1">
+            <h1 class="font-bold text-sm text-white" id="userName">Elite Investor</h1>
+            <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
+          </div>
+          <p class="text-[10px] text-emerald-400 font-mono">
+            <i class="fa-solid fa-shield-halved"></i> ID: <span id="userId">849201948</span>
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-1 rounded-full border border-emerald-800 font-semibold">SSL Secured</span>
+        <button onclick="openDailyBonus()" class="gold-gradient text-white text-xs px-3 py-1.5 rounded-lg font-bold shadow hover:opacity-90">
+          <i class="fa-solid fa-gift"></i> বোনাস </button>
+      </div>
+    </header>
+    <!-- Live Ticker -->
+    <div class="bg-blue-950/60 border-y border-blue-900/50 py-1.5 px-4 overflow-hidden whitespace-nowrap text-xs text-blue-200">
+      <span class="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded font-bold mr-2">লাইভ</span>
+      <span class="inline-block animate-pulse">🎉 নতুন ইউজারগণ রেজিস্ট্রেশনে পাচ্ছেন ৳২০ ওয়েলকাম বোনাস • 🚀 সকল ডিপোজিট ও উইথড্র সরাসরি অটোমেটিক প্রসেস হচ্ছে।</span>
+    </div>
+    <main class="max-w-md mx-auto p-4">
+      <!-- HOME TAB -->
+      <div id="tab-home" class="tab-content active space-y-4">
+        <!-- Balance Card -->
+        <div class="glass-card rounded-2xl p-5 glow-effect relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs text-gray-400 font-medium">মূল অ্যাকাউন্ট ব্যালেন্স</p>
+              <h2 class="text-3xl font-extrabold text-white mt-1" id="mainBalance">৳ 20.00</h2>
+            </div>
+            <span class="bg-blue-500/20 text-blue-400 text-xs px-2.5 py-1 rounded-lg border border-blue-500/30">VIP Level 1</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-800 text-xs">
+            <div>
+              <span class="text-gray-400">মোট বিনিয়োগ:</span>
+              <p class="font-bold text-white text-sm" id="totalInvested">৳ 0</p>
+            </div>
+            <div>
+              <span class="text-gray-400">মোট প্রফিট:</span>
+              <p class="font-bold text-emerald-400 text-sm" id="totalProfit">৳ 0</p>
+            </div>
+          </div>
+        </div>
+        <!-- Quick Action Buttons -->
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="switchTab('deposit')" class="gradient-bg text-white py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center space-x-2 hover:opacity-95 transition">
+            <i class="fa-solid fa-wallet"></i>
+            <span>ডিপোজিট করুন</span>
+          </button>
+          <button onclick="switchTab('withdraw')" class="bg-gray-800 hover:bg-gray-700 text-white py-3.5 px-4 rounded-xl font-bold text-sm border border-gray-700 flex items-center justify-center space-x-2 transition">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <span>টাকা উত্তোলন</span>
+          </button>
+        </div>
+        <!-- Recent History -->
+        <div>
+          <h3 class="font-bold text-sm text-white mb-3 flex items-center">
+            <i class="fa-solid fa-clock-rotate-left mr-2 text-blue-400"></i>সাম্প্রতিক লেনদেন
+          </h3>
+          <div id="recentHistoryList" class="space-y-2"></div>
+        </div>
+      </div>
+      <!-- PACKAGES TAB (Box Grid Design) -->
+      <div id="tab-packages" class="tab-content space-y-4">
+        <div class="text-center mb-2">
+          <h2 class="font-bold text-lg text-white">এক্সক্লুসিভ ইনভেস্টমেন্ট প্যাকেজ</h2>
+          <p class="text-xs text-gray-400">আপনার পছন্দের বক্স প্যাকেজটি সিলেক্ট করে ইনভেস্ট করুন</p>
+        </div>
+        <div id="packagesGrid" class="grid grid-cols-2 gap-3"></div>
+      </div>
+      <!-- PLANS TAB -->
+      <div id="tab-plans" class="tab-content space-y-4">
+        <h2 class="font-bold text-lg text-white mb-2">আমার সক্রিয় প্ল্যানসমূহ</h2>
+        <div id="activePlansList" class="space-y-3"></div>
+      </div>
+      <!-- RANKING TAB -->
+      <div id="tab-ranking" class="tab-content space-y-4">
+        <div class="glass-card p-4 rounded-2xl bg-gradient-to-r from-blue-900/40 to-indigo-900/40 border border-blue-500/30 text-center">
+          <h2 class="font-bold text-base text-white">
+            <i class="fa-solid fa-trophy text-amber-400 mr-2"></i>টপ ইনভেস্টর লিডারবোর্ড
+          </h2>
+          <p class="text-xs text-gray-300 mt-1">সাপ্তাহিক সেরা বিনিয়োগকারীদের তালিকা</p>
+        </div>
+        <div id="rankingList" class="space-y-2"></div>
+      </div>
+      <!-- DEPOSIT TAB -->
+      <div id="tab-deposit" class="tab-content space-y-4">
+        <div class="glass-card p-4 rounded-2xl">
+          <h2 class="font-bold text-base text-white mb-3">
+            <i class="fa-solid fa-wallet text-blue-400 mr-2"></i>বিকাশ বা নগদ ডিপোজিট
+          </h2>
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block text-gray-400 mb-1">পেমেন্ট মাধ্যম:</label>
+              <div class="grid grid-cols-2 gap-3">
+                <button type="button" onclick="selectMethod('bkash')" id="btn-bkash" class="p-3 rounded-xl border border-pink-500 bg-pink-950/30 text-white font-bold flex items-center justify-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+                  <span>বিকাশ</span>
+                </button>
+                <button type="button" onclick="selectMethod('nagad')" id="btn-nagad" class="p-3 rounded-xl border border-gray-700 bg-gray-900 text-white font-bold flex items-center justify-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+                  <span>নগদ</span>
+                </button>
+              </div>
+            </div>
+            <div class="bg-gray-900 p-3.5 rounded-xl border border-gray-800 flex justify-between items-center">
+              <div>
+                <span class="text-gray-400 text-[10px]">অফিসিয়াল সেন্ড মানি নাম্বার:</span>
+                <p class="font-mono font-bold text-sm text-emerald-400" id="depositNumber">01873046713</p>
+              </div>
+              <button onclick="copyNumber()" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">কপি</button>
+            </div>
+            <div>
+              <label class="block text-gray-400 mb-1">টাকার পরিমাণ (৳):</label>
+              <input type="number" id="depositAmount" placeholder="যেমন: 350, 700, 1200" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-gray-400 mb-1">ট্রানজেকশন আইডি (TrxID):</label>
+              <input type="text" id="depositTrxId" placeholder="যেমন: 9N74K3L2M1" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white uppercase focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-gray-400 mb-1">স্ক্রিনশট আপলোড:</label>
+              <input type="file" id="depositScreenshot" accept="image/*" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-gray-400 text-xs">
+            </div>
+            <button onclick="submitDeposit()" class="w-full gradient-bg text-white font-bold py-3.5 rounded-xl shadow-lg mt-2"> ডিপোজিট সাবমিট করুন (বটে পাঠান) </button>
+          </div>
+        </div>
+      </div>
+      <!-- WITHDRAW TAB -->
+      <div id="tab-withdraw" class="tab-content space-y-4">
+        <div class="glass-card p-4 rounded-2xl">
+          <h2 class="font-bold text-base text-white mb-2">
+            <i class="fa-solid fa-money-bill-transfer text-emerald-400 mr-2"></i>টাকা উত্তোলন (সর্বনিম্ন ৳৫০০)
+          </h2>
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block text-gray-400 mb-1">উত্তোলনের মাধ্যম:</label>
+              <select id="withdrawMethod" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white focus:outline-none">
+                <option value="bkash">বিকাশ পার্সোনাল</option>
+                <option value="nagad">নগদ পার্সোনাল</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-400 mb-1">একাউন্ট নাম্বার:</label>
+              <input type="text" id="withdrawAccount" placeholder="01XXXXXXXXX" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-gray-400 mb-1">টাকার পরিমাণ:</label>
+              <input type="number" id="withdrawAmount" placeholder="সর্বনিম্ন 500" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white focus:outline-none">
+            </div>
+            <button onclick="submitWithdraw()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg mt-2"> উত্তোলন রিকোয়েস্ট পাঠান </button>
+          </div>
+        </div>
+      </div>
+      <!-- REFERRAL TAB -->
+      <div id="tab-referral" class="tab-content space-y-4">
+        <div class="glass-card p-5 rounded-2xl text-center">
+          <h2 class="font-bold text-base text-white">রেফার করে আয় করুন ৳৫০</h2>
+          <p class="text-xs text-gray-400 mt-1">প্রতিটি সফল রেফারেলের জন্য ইনস্ট্যান্ট <b class="text-emerald-400">৳৫০</b> বোনাস। </p>
+          <div class="bg-gray-900 p-3 rounded-xl border border-gray-800 mt-4 flex items-center justify-between text-xs">
+            <span id="referralLinkText" class="text-gray-300 font-mono truncate mr-2">https://t.me/Elite_Investbot</span>
+            <button onclick="copyReferral()" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg font-bold">কপি</button>
+          </div>
+        </div>
+      </div>
+      <!-- SUPPORT TAB -->
+      <div id="tab-support" class="tab-content space-y-3">
+        <h2 class="font-bold text-lg text-white mb-2">অফিসিয়াল সাপোর্ট</h2>
+        <a href="https://t.me/Elite_Investbot" target="_blank" class="glass-card p-4 rounded-xl flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-white text-sm">সাপোর্ট বট</h4>
+            <p class="text-xs text-gray-400">@Elite_Investbot</p>
+          </div>
+          <i class="fa-solid fa-chevron-right text-gray-500 text-xs"></i>
+        </a>
+        <a href="https://t.me/Elite_Investment_9" target="_blank" class="glass-card p-4 rounded-xl flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-white text-sm">আপডেট চ্যানেল</h4>
+            <p class="text-xs text-gray-400">https://t.me/Elite_Investment_9</p>
+          </div>
+          <i class="fa-solid fa-chevron-right text-gray-500 text-xs"></i>
+        </a>
+      </div>
+    </main>
+    <!-- Navigation Bar -->
+    <nav class="glass-card fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t border-gray-800 px-2 py-2 flex justify-around items-center z-50 text-[10px]">
+      <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-blue-400 font-bold">
+        <i class="fa-solid fa-house text-base mb-0.5"></i>হোম </button>
+      <button onclick="switchTab('packages')" id="nav-packages" class="flex flex-col items-center text-gray-400 font-bold">
+        <i class="fa-solid fa-box-archive text-base mb-0.5"></i>প্যাকেজ </button>
+      <button onclick="switchTab('plans')" id="nav-plans" class="flex flex-col items-center text-gray-400 font-bold">
+        <i class="fa-solid fa-chart-line text-base mb-0.5"></i>আমার প্ল্যান </button>
+      <button onclick="switchTab('ranking')" id="nav-ranking" class="flex flex-col items-center text-gray-400 font-bold">
+        <i class="fa-solid fa-trophy text-base mb-0.5"></i>র‍্যাঙ্কিং </button>
+      <button onclick="switchTab('referral')" id="nav-referral" class="flex flex-col items-center text-gray-400 font-bold">
+        <i class="fa-solid fa-user-group text-base mb-0.5"></i>রেফারেল </button>
+      <button onclick="switchTab('support')" id="nav-support" class="flex flex-col items-center text-gray-400 font-bold">
+        <i class="fa-solid fa-headset text-base mb-0.5"></i>সাপোর্ট </button>
+    </nav>
+    <!-- Daily Bonus Modal -->
+    <div id="bonusModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+      <div class="glass-card w-full max-w-xs rounded-2xl p-5 text-center border border-amber-500/30">
+        <h3 class="font-bold text-base text-white mb-2">ডেইলি ফ্রি বোনাস ৳১০!</h3>
+        <div class="flex space-x-2 mt-4">
+          <button onclick="claimBonus()" class="w-full gold-gradient text-white font-bold py-2.5 rounded-xl text-xs">দাবি করুন</button>
+          <button onclick="closeBonus()" class="w-full bg-gray-800 text-gray-300 font-bold py-2.5 rounded-xl text-xs">বাতিল</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      let userData = {
+        name: "রাকিব হাসান",
+        id: "849201948",
+        balance: 20.00,
+        totalInvested: 0,
+        totalProfit: 0,
+        activePlans: [],
+        history: [{
+          title: "টেলিগ্রাম ওয়েলকাম বোনাস",
+          amount: "+৳ 20",
+          time: "এইমাত্র",
+          type: "success"
+        }]
+      };
+      // 12 Investment Packages (Box Grid Friendly)
+      const packagesData = [{
+        id: 1,
+        name: "স্টার্টার প্যাক",
+        price: 350,
+        return: 500,
+        days: 3
+      }, {
+        id: 2,
+        name: "ব্রোঞ্জ প্যাক",
+        price: 700,
+        return: 1000,
+        days: 6
+      }, {
+        id: 3,
+        name: "সিলভার প্যাক",
+        price: 1200,
+        return: 1500,
+        days: 8
+      }, {
+        id: 4,
+        name: "গোল্ড প্যাক",
+        price: 2000,
+        return: 2700,
+        days: 10
+      }, {
+        id: 5,
+        name: "প্লাটিনাম প্যাক",
+        price: 3500,
+        return: 4800,
+        days: 12
+      }, {
+        id: 6,
+        name: "ডায়মন্ড প্যাক",
+        price: 5000,
+        return: 7000,
+        days: 15
+      }, {
+        id: 7,
+        name: "ভিআইপি প্যাক ১",
+        price: 7500,
+        return: 10500,
+        days: 15
+      }, {
+        id: 8,
+        name: "ভিআইপি প্যাক ২",
+        price: 10000,
+        return: 14500,
+        days: 20
+      }, {
+        id: 9,
+        name: "প্রো ইনভেস্ট প্যাক",
+        price: 15000,
+        return: 22000,
+        days: 25
+      }, {
+        id: 10,
+        name: "রয়্যাল প্যাকেজ",
+        price: 20000,
+        return: 30000,
+        days: 30
+      }, {
+        id: 11,
+        name: "মেগা প্রফিট প্যাক",
+        price: 30000,
+        return: 46000,
+        days: 30
+      }, {
+        id: 12,
+        name: "আল্টিমেট এলিট প্যাক",
+        price: 50000,
+        return: 80000,
+        days: 35
+      }];
+      const rankingData = [{
+        rank: 1,
+        name: "নাজমুল ইসলাম",
+        invest: "৳ ৫০,০০০",
+        profit: "৳ ৮০,০০০"
+      }, {
+        rank: 2,
+        name: "তানভীর আহমেদ",
+        invest: "৳ ৩০,০০০",
+        profit: "৳ ৪৬,০০০"
+      }, {
+        rank: 3,
+        name: "শরিফুল আলম",
+        invest: "৳ ২০,০০০",
+        profit: "৳ ৩০,০০০"
+      }];
+
+      function initApp() {
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe?.user) {
+          let tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+          userData.name = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
+          userData.id = tgUser.id;
+        }
+        document.getElementById('userName').innerText = userData.name;
+        document.getElementById('userId').innerText = userData.id;
+        document.getElementById('userAvatar').innerText = userData.name.substring(0, 2).toUpperCase();
+        document.getElementById('referralLinkText').innerText = `https://t.me/Elite_Investbot?start=ref${userData.id}`;
+        renderPackagesGrid();
+        renderRanking();
+        updateUI();
+      }
+
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        document.querySelectorAll('nav button').forEach(el => {
+          el.classList.remove('text-blue-400');
+          el.classList.add('text-gray-400');
+        });
+        let activeNav = document.getElementById('nav-' + tabId);
+        if (activeNav) {
+          activeNav.classList.remove('text-gray-400');
+          activeNav.classList.add('text-blue-400');
+        }
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+
+      function updateUI() {
+        document.getElementById('mainBalance').innerText = `৳ ${userData.balance.toFixed(2)}`;
+        document.getElementById('totalInvested').innerText = `৳ ${userData.totalInvested}`;
+        document.getElementById('totalProfit').innerText = `৳ ${userData.totalProfit}`;
+        let historyHTML = '';
+        userData.history.forEach(item => {
+          historyHTML += `
+											<div class="glass-card p-3 rounded-xl flex justify-between items-center text-xs">
+												<div>
+													<h4 class="font-bold text-white">${item.title}</h4>
+													<p class="text-[10px] text-gray-400">${item.time}</p>
+												</div>
+												<span class="font-extrabold text-emerald-400">${item.amount}</span>
+											</div>`;
+        });
+        document.getElementById('recentHistoryList').innerHTML = historyHTML;
+        let plansHTML = '';
+        if (userData.activePlans.length === 0) {
+          plansHTML = `
+											<div class="glass-card p-4 rounded-xl text-center text-gray-400 text-xs py-8">
+												<p>কোনো সক্রিয় প্ল্যান নেই। প্যাকেজ থেকে প্ল্যান চালু করুন।</p>
+											</div>`;
+        } else {
+          userData.activePlans.forEach((plan, idx) => {
+            plansHTML += `
+											<div class="glass-card p-4 rounded-xl border border-blue-500/30 mb-2">
+												<div class="flex justify-between items-center mb-2">
+													<h4 class="font-bold text-white text-sm">${plan.name}</h4>
+													<span class="text-xs">মেয়াদ: ${plan.days} দিন</span>
+												</div>
+												<div class="text-xs text-gray-300 mb-2">বিনিয়োগ: ৳${plan.price} | রিটার্ন: 
+													<b class="text-emerald-400">৳${plan.return}</b>
+												</div>
+												<button onclick="claimPlan(${idx})" class="w-full bg-emerald-600 text-white font-bold py-2 rounded-lg text-xs">মেয়াদ পূর্ণ করে ব্যালেন্সে যোগ করুন</button>
+											</div>`;
+          });
+        }
+        document.getElementById('activePlansList').innerHTML = plansHTML;
+      }
+
+      function renderPackagesGrid() {
+        let html = '';
+        packagesData.forEach(pkg => {
+          html += `
+                    
+											<div class="box-gradient p-3.5 rounded-2xl border border-gray-800 flex flex-col justify-between shadow-lg relative overflow-hidden">
+												<div class="absolute -right-6 -top-6 w-16 h-16 bg-blue-500/10 rounded-full blur-xl"></div>
+												<div>
+													<h3 class="font-bold text-white text-xs mb-1">${pkg.name}</h3>
+													<p class="text-[10px] text-gray-400">মেয়াদ: 
+														<span class="text-white font-semibold">${pkg.days} দিন</span>
+													</p>
+													<div class="my-2 py-1.5 bg-black/30 rounded-lg text-center border border-gray-800/80">
+														<span class="text-[10px] text-gray-400 block">রিটার্ন</span>
+														<span class="font-extrabold text-sm text-emerald-400">৳ ${pkg.return}</span>
+													</div>
+												</div>
+												<button onclick="buyPackage(${pkg.id})" class="w-full gradient-bg text-white py-2 rounded-xl font-bold text-[11px] shadow hover:opacity-90 mt-1">
+                            চાલુ করুন (৳${pkg.price})
+                        </button>
+											</div>
+                `;
+        });
+        document.getElementById('packagesGrid').innerHTML = html;
+      }
+
+      function renderRanking() {
+        let html = '';
+        rankingData.forEach(item => {
+          html += `
+											<div class="glass-card p-3 rounded-xl flex items-center justify-between text-xs mb-1">
+												<div>
+													<h4 class="font-bold text-white">#${item.rank} ${item.name}</h4>
+													<p class="text-[10px] text-gray-400">বিনিয়োগ: ${item.invest}</p>
+												</div>
+												<span class="font-bold text-emerald-400">${item.profit}</span>
+											</div>`;
+        });
+        document.getElementById('rankingList').innerHTML = html;
+      }
+      let currentMethod = 'bkash';
+
+      function selectMethod(method) {
+        currentMethod = method;
+        if (method === 'bkash') {
+          document.getElementById('btn-bkash').className = "p-3 rounded-xl border border-pink-500 bg-pink-950/30 text-white font-bold flex items-center justify-center space-x-2";
+          document.getElementById('btn-nagad').className = "p-3 rounded-xl border border-gray-700 bg-gray-900 text-white font-bold flex items-center justify-center space-x-2";
+          document.getElementById('depositNumber').innerText = "01873046713";
+        } else {
+          document.getElementById('btn-nagad').className = "p-3 rounded-xl border border-orange-500 bg-orange-950/30 text-white font-bold flex items-center justify-center space-x-2";
+          document.getElementById('btn-bkash').className = "p-3 rounded-xl border border-gray-700 bg-gray-900 text-white font-bold flex items-center justify-center space-x-2";
+          document.getElementById('depositNumber').innerText = "01863796311";
+        }
+      }
+
+      function copyNumber() {
+        navigator.clipboard.writeText(document.getElementById('depositNumber').innerText);
+        alert("নম্বার সফলভাবে কপি করা হয়েছে!");
+      }
+
+      function submitDeposit() {
+        let amount = document.getElementById('depositAmount').value;
+        let trxId = document.getElementById('depositTrxId').value;
+        if (!amount || !trxId) {
+          alert("দয়া করে সঠিক পরিমাণ এবং TrxID দিন।");
+          return;
+        }
+        alert(`ডিপোজিট রিকোয়েস্ট সফলভাবে @Elite_Investbot এ পাঠানো হয়েছে!\n\nনাম: ${userData.name}\nTelegram ID: ${userData.id}\nমেথড: ${currentMethod.toUpperCase()}\nপরিমাণ: ৳${amount}\nTrxID: ${trxId}`);
+        userData.history.unshift({
+          title: `${currentMethod.toUpperCase()} ডিপোজিট রিকোয়েস্ট`,
+          amount: `+৳ ${amount}`,
+          time: "এইমাত্র",
+          type: "success"
+        });
+        updateUI();
+        switchTab('home');
+      }
+
+      function buyPackage(id) {
+        let pkg = packagesData.find(p => p.id === id);
+        if (userData.balance < pkg.price) {
+          alert("পর্যাপ্ত ব্যালেন্স নেই! দয়া করে ডিপোজিট করুন।");
+          switchTab('deposit');
+          return;
+        }
+        userData.balance -= pkg.price;
+        userData.totalInvested += pkg.price;
+        userData.activePlans.push(pkg);
+        userData.history.unshift({
+          title: `প্যাকেজ ক্রয় (${pkg.name})`,
+          amount: `-৳ ${pkg.price}`,
+          time: "এইমাত্র",
+          type: "success"
+        });
+        alert(`অভিনন্দন! ${pkg.name} সফলভাবে সচল হয়েছে।`);
+        updateUI();
+        switchTab('plans');
+      }
+
+      function claimPlan(index) {
+        let plan = userData.activePlans[index];
+        userData.balance += plan.return;
+        userData.totalProfit += (plan.return-plan.price);
+        userData.history.unshift({
+          title: `প্রফিট রিসিভ (${plan.name})`,
+          amount: `+৳ ${plan.return}`,
+          time: "এইমাত্র",
+          type: "success"
+        });
+        userData.activePlans.splice(index, 1);
+        alert(`মেয়াদ পূর্ণ হওয়ায় ৳${plan.return} মেইন ব্যালেন্সে যোগ হয়েছে!`);
+        updateUI();
+      }
+
+      function submitWithdraw() {
+        let amount = parseFloat(document.getElementById('withdrawAmount').value);
+        let account = document.getElementById('withdrawAccount').value;
+        let method = document.getElementById('withdrawMethod').value;
+        if (!amount || !account) {
+          alert("সকল তথ্য সঠিকভাবে পূরণ করুন।");
+          return;
+        }
+        if (amount < 500) {
+          alert("সর্বনিম্ন উত্তোলন পরিমাণ ৳ ৫০০।");
+          return;
+        }
+        if (userData.balance < amount) {
+          alert("পর্যাপ্ত ব্যালেন্স নেই।");
+          return;
+        }
+        userData.balance -= amount;
+        userData.history.unshift({
+          title: `উত্তোলন রিকোয়েস্ট (${method.toUpperCase()})`,
+          amount: `-৳ ${amount}`,
+          time: "এইমাত্র",
+          type: "success"
+        });
+        alert(`উত্তোলন রিকোয়েস্ট @Elite_Investbot এ পাঠানো হয়েছে!\n\nTelegram ID: ${userData.id}\nএকাউন্ট: ${account}\nপরিমাণ: ৳${amount}`);
+        updateUI();
+        switchTab('home');
+      }
+
+      function copyReferral() {
+        navigator.clipboard.writeText(document.getElementById('referralLinkText').innerText);
+        alert("রেফারেল লিংক কপি করা হয়েছে!");
+      }
+
+      function openDailyBonus() {
+        document.getElementById('bonusModal').classList.remove('hidden');
+      }
+
+      function closeBonus() {
+        document.getElementById('bonusModal').classList.add('hidden');
+      }
+
+      function claimBonus() {
+        userData.balance += 10;
+        userData.history.unshift({
+          title: "ডেইলি বোনাস",
+          amount: "+৳ 10",
+          time: "এইমাত্র",
+          type: "success"
+        });
+        alert("বোনাস হিসেবে ৳১০ যোগ হয়েছে!");
+        closeBonus();
+        updateUI();
+      }
+      window.onload = initApp;
+    </script>
+  </body>
+</html>
