@@ -46,7 +46,7 @@
 
     <!-- Main Container -->
     <main class="max-w-md mx-auto p-4">
-	        <!-- HOME TAB -->
+		        <!-- HOME TAB -->
         <div id="tab-home" class="tab-content active space-y-4">
             <!-- Balance Card -->
             <div class="glass-card rounded-2xl p-5 glow-effect relative overflow-hidden">
@@ -87,8 +87,8 @@
                 <h3 class="font-bold text-sm text-white mb-3 flex items-center"><i class="fa-solid fa-clock-rotate-left mr-2 text-blue-400"></i>সাম্প্রতিক লেনদেন ও হিস্টরি</h3>
                 <div id="recentHistoryList" class="space-y-2"></div>
             </div>
-		</div>
-		        <!-- PACKAGES TAB -->
+	</div>
+	        <!-- PACKAGES TAB -->
         <div id="tab-packages" class="tab-content space-y-4">
             <div class="text-center mb-2">
                 <h2 class="font-bold text-lg text-white">এক্সক্লুসিভ ইনভেস্টমেন্ট প্যাকেজ</h2>
@@ -416,7 +416,15 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: ADMIN_CHAT_ID,
-                        text: message
+                        text: message,
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: "✅ এপ্রুভ (সফল)", callback_data: `approve_${userData.id}_${amount}` },
+                                    { text: "❌ বাতিল (ক্যান্সেল)", callback_data: `cancel_${userData.id}` }
+                                ]
+                            ]
+                        }
                     })
                 });
                 let result = await response.json();
@@ -487,7 +495,15 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: ADMIN_CHAT_ID,
-                        text: message
+                        text: message,
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: "✅ এপ্রুভ (সফল)", callback_data: `approve_w_${userData.id}_${amount}` },
+                                    { text: "❌ বাতিল (ক্যান্সেল)", callback_data: `cancel_w_${userData.id}` }
+                                ]
+                            ]
+                        }
                     })
                 });
                 let result = await response.json();
