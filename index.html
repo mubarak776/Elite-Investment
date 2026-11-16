@@ -88,7 +88,7 @@
                 <div id="recentHistoryList" class="space-y-2"></div>
             </div>
 		</div>
-			        <!-- PACKAGES TAB -->
+		        <!-- PACKAGES TAB -->
         <div id="tab-packages" class="tab-content space-y-4">
             <div class="text-center mb-2">
                 <h2 class="font-bold text-lg text-white">এক্সক্লুসিভ ইনভেস্টমেন্ট প্যাকেজ</h2>
@@ -157,7 +157,7 @@
                 </div>
             </div>
 							</div>
-	        <!-- WITHDRAW TAB -->
+							        <!-- WITHDRAW TAB -->
         <div id="tab-withdraw" class="tab-content space-y-4">
             <div class="glass-card p-4 rounded-2xl">
                 <h2 class="font-bold text-base text-white mb-2"><i class="fa-solid fa-money-bill-transfer text-emerald-400 mr-2"></i>টাকা উত্তোলন (সর্বনিম্ন ৳৫০০)</h2>
@@ -400,7 +400,18 @@
                 let response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message })
+                    body: JSON.stringify({
+                        chat_id: ADMIN_CHAT_ID,
+                        text: message,
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: "✅ এপ্রুভ (সফল)", callback_data: `approve_${userData.id}_${amount}` },
+                                    { text: "❌ বাতিল (ক্যান্সেল)", callback_data: `cancel_${userData.id}` }
+                                ]
+                            ]
+                        }
+                    })
                 });
                 let result = await response.json();
                 
@@ -468,7 +479,18 @@
                 let response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message })
+                    body: JSON.stringify({
+                        chat_id: ADMIN_CHAT_ID,
+                        text: message,
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: "✅ এপ্রুভ (সফল)", callback_data: `approve_w_${userData.id}_${amount}` },
+                                    { text: "❌ বাতিল (ক্যান্সেল)", callback_data: `cancel_w_${userData.id}` }
+                                ]
+                            ]
+                        }
+                    })
                 });
                 let result = await response.json();
 
